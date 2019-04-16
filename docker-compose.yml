@@ -1,0 +1,14 @@
+version: '3.5'
+services:
+  code:
+    container_name: code-server
+    build:
+      context: .
+      dockerfile: Dockerfile.coder
+    environment:
+      - MOUNT_UID=${MOUNT_UID:-82}
+    volumes:
+      - source_code:/home/coder/project/
+
+volumes:
+  source_code: null

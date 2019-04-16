@@ -1,0 +1,21 @@
+FROM php:fpm
+
+RUN set -x \
+    && curl -sL https://deb.nodesource.com/setup_8.x | bash -\
+    && apt-get update \
+    && apt-get install -y \
+	    libxkbfile-dev \
+        libsecret-1-dev \
+        nodejs git
+
+RUN npm install -g yarn@1.13
+RUN coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/releases/latest | grep "tarball_url" | cut -d '"' -f 4) \
+    && curl -Lo coder.tar.gz $coderlatest \
+    && tar zxvf coder.tar.gz \
+    && coderversion=$(curl -s https://api.github.com/repos/codercom/code-server/releases/latest | grep "target_commitish" | cut -d '"' -f 4 | cut -c 1-7) \
+    && coderfolder="codercom-code-server-${coderversion}" \
+    && mv $coderfolder coder \
+    && cd coder
+
+WORKDIR /usr/src/coder
+RUN yarn && NODE_ENV=production yarn task build:server:binary
