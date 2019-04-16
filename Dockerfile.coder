@@ -19,3 +19,36 @@ RUN coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/rele
 
 WORKDIR /usr/src/coder
 RUN yarn && NODE_ENV=production yarn task build:server:binary
+
+FROM php:fpm
+RUN apt-get update && apt-get install -y \
+	openssl \
+	net-tools \
+	git \
+	locales \
+	dumb-init \
+	wget
+
+RUN locale-gen en_US.UTF-8
+# We unfortunately cannot use update-locale because docker will not use the env variables
+# configured in /etc/default/locale so we need to set it manually.
+ENV LC_ALL=en_US.UTF-8
+
+RUN adduser --gecos '' --disabled-password coder && \
+	echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+
+USER coder
+# We create first instead of just using WORKDIR as when WORKDIR creates, the user is root.
+RUN mkdir -p /home/coder/project && \
+    chmod g+rw /home/coder/project;
+
+WORKDIR /home/coder/project
+
+# This assures we have a volume mounted even if the user forgot to do bind mount.
+# XXX: Workaround for GH-459 and for OpenShift compatibility.
+VOLUME [ "/home/coder/project" ]
+
+COPY --from=0 /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server
+EXPOSE 8443
+
+ENTRYPOINT ["dumb-init", "code-server"]
