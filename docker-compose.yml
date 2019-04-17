@@ -1,6 +1,6 @@
 version: '3.5'
 services:
-  code:
+  coder:
     container_name: code-server
     build:
       context: .
@@ -9,6 +9,10 @@ services:
       - MOUNT_UID=${MOUNT_UID:-82}
     volumes:
       - source_code:/home/coder/project/
+      - coder_setting:/home/coder/
+    ports:
+      - "8443:8443"
 
 volumes:
   source_code: null
+  coder_setting: null
