@@ -97,7 +97,8 @@ VOLUME [ "/home/coder/project" ]
 EXPOSE 8443
 
 ### && composer global require hirak/prestissimo
-COPY coder-entrypoint.sh /coder-entrypoint.sh
-COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
+COPY ./coder-entrypoint.sh /coder-entrypoint.sh
+COPY ./coder-entrypoint.d/*.sh /coder-entrypoint.d/
+RUN chmod +X /coder-entrypoint.sh
 
 ENTRYPOINT ["/coder-entrypoint.sh"]
