@@ -1,5 +1,9 @@
 FROM php:fpm
 
+ARG CODER_VERSION
+
+ENV CODER_VERSION $CODER_VERSION
+
 RUN set -x \
     && curl -sL https://deb.nodesource.com/setup_8.x | bash -\
     && apt-get update \
@@ -12,11 +16,10 @@ RUN npm install -g yarn@1.13
 
 RUN set -x \
     && cd /usr/src \
-    && coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/releases/latest | grep "tarball_url" | cut -d '"' -f 4) \
+    && coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url' | grep "${CODER_VERSION}" | cut -d '"' -f 4) \
     && curl -Lo coder.tar.gz $coderlatest \
     && tar zxf coder.tar.gz \
-    && coderversion=$(curl -s https://api.github.com/repos/codercom/code-server/releases/latest | grep "target_commitish" | cut -d '"' -f 4 | cut -c 1-7) \
-    && coderfolder="codercom-code-server-${coderversion}" \
+    && coderfolder=$(ls | grep "codercom-code-server") \
     && mv $coderfolder coder \
     && cd coder
 

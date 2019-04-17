@@ -4,6 +4,8 @@ services:
     container_name: code-server
     build:
       context: ./coder
+      args:
+        CODER_VERSION: 1.792
     environment:
       - DEBUG_ENTRYPOINT=2
     volumes:
