@@ -3,13 +3,13 @@ services:
   coder:
     container_name: code-server
     build:
-      context: .
-      dockerfile: Dockerfile.coder
+      context: ./coder
     environment:
-      - MOUNT_UID=${MOUNT_UID:-82}
+      - DEBUG_ENTRYPOINT=2
     volumes:
       - source_code:/home/coder/project/
       - coder_setting:/home/coder/
+      - ./coder/coder-run.d/:/run.d/
     ports:
       - "8443:8443"
 

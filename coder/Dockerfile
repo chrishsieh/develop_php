@@ -63,8 +63,10 @@ RUN set -x \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends --no-install-suggests ${RUN_DEPS} \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false apt-utils \
     && rm -rf /var/lib/apt/lists/* \
-    && update-ca-certificates \
+    && update-ca-certificates
+
 # ---- Installing Running env ----
+RUN set -x \
     && npm i npm@latest -g \
     && npm install -g grunt-cli webpack-cli \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -76,18 +78,23 @@ RUN set -x \
 
 ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
 
+RUN mkdir -p /run.d
+
 USER coder
 
+COPY --from=0 /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server
+
 RUN mkdir -p /home/coder/project \
-    && chmod g+rw /home/coder/project \
-    && composer global require hirak/prestissimo
+    && chmod g+rw /home/coder/project
 
 WORKDIR /home/coder/project
 
 VOLUME [ "/home/coder/project" ]
 
-COPY --from=0 /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server
-
 EXPOSE 8443
 
-ENTRYPOINT ["dumb-init", "code-server"]
+### && composer global require hirak/prestissimo
+COPY coder-entrypoint.sh /coder-entrypoint.sh
+COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
+
+ENTRYPOINT ["/coder-entrypoint.sh"]
