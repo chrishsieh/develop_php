@@ -2,13 +2,14 @@ version: '3.5'
 services:
   coder:
     container_name: code-server
-    image: chrishsieh/develop_php:coder-latest
-#    build:
-#      context: ./coder
-#      args:
-#        CODER_VERSION: 1.792
+#    image: chrishsieh/develop_php:coder-latest
+    build:
+      context: ./coder
+      args:
+        CODER_VERSION: 1.868
     environment:
-      - DEBUG_ENTRYPOINT=2
+      DEBUG_ENTRYPOINT: 2
+      CODESERVER_PARAMETER: --allow-http --no-auth
     volumes:
       - source_code:/home/coder/project/
       - coder_setting:/home/coder/

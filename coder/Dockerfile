@@ -5,27 +5,29 @@ ARG CODER_VERSION
 ENV CODER_VERSION $CODER_VERSION
 
 RUN set -x \
-    && curl -sL https://deb.nodesource.com/setup_8.x | bash -\
-    && apt-get update \
-    && apt-get install -y \
-        libxkbfile-dev \
-        libsecret-1-dev \
-        nodejs git
-
-RUN npm install -g yarn@1.13
-
-RUN set -x \
+    && DEBIAN_FRONTEND=noninteractive apt-get update -qq \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends --no-install-suggests apt-utils ca-certificates \
+    && curl -sL https://deb.nodesource.com/setup_10.x | bash -\
+    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y \
+        libxkbfile-dev libsecret-1-dev nodejs git \
+    && npm install -g yarn@1.13 \
     && cd /usr/src \
     && coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url' | grep "${CODER_VERSION}" | cut -d '"' -f 4) \
+    && set +x \
     && curl -Lo coder.tar.gz $coderlatest \
     && tar zxf coder.tar.gz \
     && coderfolder=$(ls | grep "codercom-code-server") \
     && mv $coderfolder coder \
-    && cd coder
-
-WORKDIR /usr/src/coder
-
-RUN yarn && NODE_ENV=production yarn task build:server:binary
+    && set -x \
+    && cd /usr/src/coder \
+    && yarn && NODE_ENV=production yarn task build:server:binary \
+    && cp /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server \
+    && cd /usr/src \
+    && rm -rf coder.tar.gz \
+    && rm -rf /usr/src/coder \
+    && npm uninstall -g yarn \
+    && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+        libxkbfile-dev libsecret-1-dev nodejs git
 
 FROM php:fpm
 
@@ -62,7 +64,7 @@ RUN set -x \
 # ---- Removing Build dependencies ----
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ${BUILD_DEPS} \
 # ---- Installing Running dependencies ----
-    && curl -sL https://deb.nodesource.com/setup_8.x | bash -\
+    && curl -sL https://deb.nodesource.com/setup_10.x | bash -\
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends --no-install-suggests ${RUN_DEPS} \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false apt-utils \
     && rm -rf /var/lib/apt/lists/* \
@@ -80,15 +82,28 @@ RUN set -x \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
+ENV VSCODE_DATA "/home/coder/.local/share/code-server"
+ENV VSCODE_LOG "/home/coder/.cache/code-server/logs"
 
 RUN mkdir -p /run.d
 
+COPY coder-entrypoint.sh /coder-entrypoint.sh
+
+COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
+
+RUN chmod +X /coder-entrypoint.sh
+
 USER coder
 
-COPY --from=0 /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server
+COPY --from=0 /usr/local/bin/code-server /usr/local/bin/code-server
 
 RUN mkdir -p /home/coder/project \
-    && chmod g+rw /home/coder/project
+    && chmod g+rw /home/coder/project \
+    && mkdir -p ${VSCODE_EXTENSIONS} \
+    && mkdir -p ${VSCODE_DATA} \
+    && mkdir -p ${VSCODE_LOG}
+
+### && composer global require hirak/prestissimo
 
 WORKDIR /home/coder/project
 
@@ -96,9 +111,5 @@ VOLUME [ "/home/coder/project" ]
 
 EXPOSE 8443
 
-### && composer global require hirak/prestissimo
-COPY ./coder-entrypoint.sh /coder-entrypoint.sh
-COPY ./coder-entrypoint.d/*.sh /coder-entrypoint.d/
-RUN chmod +X /coder-entrypoint.sh
 
 ENTRYPOINT ["/coder-entrypoint.sh"]

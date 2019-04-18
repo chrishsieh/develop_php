@@ -8,7 +8,7 @@ set -o pipefail
 if ! [ -f git_clone.done ]; then
 git_clone "https://github.com/ChurchCRM/CRM.git" "CRM" "${DEBUG_LEVEL}"
 run "cp CRM/BuildConfig.json.example CRM/BuildConfig.json" "${DEBUG_LEVEL}"
-run "cd CRM && npm install" "${DEBUG_LEVEL}"
+run "cd CRM && chmod +x ./travis-ci/*.sh && chmod +x ./scripts/*.sh" "${DEBUG_LEVEL}"
 touch git_clone.done
 fi
 

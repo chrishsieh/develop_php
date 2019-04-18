@@ -41,5 +41,6 @@ done
 ###
 ### Startup
 ###
-log "info" "Starting Code-Server" "${DEBUG_LEVEL}"
-exec /usr/local/bin/code-server --password=churchcrm
+CODESERVER_PARAMETER="$( env_get "CODESERVER_PARAMETER" "" )"
+log "info" "Starting Code-Server ${CODESERVER_PARAMETER}" "${DEBUG_LEVEL}"
+exec /usr/local/bin/code-server ${CODESERVER_PARAMETER}
