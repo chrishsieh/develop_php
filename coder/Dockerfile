@@ -5,25 +5,27 @@ ARG CODER_VERSION
 ENV CODER_VERSION $CODER_VERSION
 
 RUN set -x \
+    && cd /usr/src \
+	&& set +x \
+    && coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url') \
+	&& coderlatest=$(echo $coderlatest | grep "${CODER_VERSION}" | cut -d '"' -f 4) \
+    && curl -LOs $coderlatest \
+	&& coderfile=$(echo $coderlatest| cut -d '/' -f 8) \
+    && tar zxf $coderfile \
+    && coderfolder=$(ls | grep "codercom-code-server") \
+    && mv $coderfolder coder
+RUN set -x \
     && DEBIAN_FRONTEND=noninteractive apt-get update -qq \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends --no-install-suggests apt-utils ca-certificates \
     && curl -sL https://deb.nodesource.com/setup_10.x | bash -\
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y \
         libxkbfile-dev libsecret-1-dev nodejs git \
     && npm install -g yarn@1.13 \
-    && cd /usr/src \
-    && coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url' | grep "${CODER_VERSION}" | cut -d '"' -f 4) \
-    && set +x \
-    && curl -Lo coder.tar.gz $coderlatest \
-    && tar zxf coder.tar.gz \
-    && coderfolder=$(ls | grep "codercom-code-server") \
-    && mv $coderfolder coder \
-    && set -x \
     && cd /usr/src/coder \
     && yarn && NODE_ENV=production yarn task build:server:binary \
     && cp /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server \
     && cd /usr/src \
-    && rm -rf coder.tar.gz \
+    && rm -rf $coderfile \
     && rm -rf /usr/src/coder \
     && npm uninstall -g yarn \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
