@@ -69,7 +69,7 @@ RUN set -x \
 # ---- Removing Build dependencies ----
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ${BUILD_DEPS} \
 # ---- Installing Running dependencies ----
-    && curl -sL https://deb.nodesource.com/setup_10.x | bash -\
+    && curl -sL https://deb.nodesource.com/setup_8.x | bash -\
     && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends --no-install-suggests ${RUN_DEPS} \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false apt-utils \
     && rm -rf /var/lib/apt/lists/* \
