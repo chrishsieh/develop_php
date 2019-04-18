@@ -14,7 +14,8 @@ run "cp BuildConfig.json.example BuildConfig.json" "${DEBUG_LEVEL}"
 run "chmod +x ./travis-ci/*.sh" "${DEBUG_LEVEL}"
 run "chmod +x ./scripts/*.sh" "${DEBUG_LEVEL}"
 run "chown -R www-data:www-data /home/coder/project/src" "${DEBUG_LEVEL}"
-run "rm -rf /var/www/html" "${DEBUG_LEVEL}"
-run "ln -s /home/coder/project/src /var/www/html" "${DEBUG_LEVEL}"
 touch ../git_clone.done
 fi
+
+run "rm -rf /var/www/html" "${DEBUG_LEVEL}"
+run "ln -s /home/coder/project/src /var/www/html" "${DEBUG_LEVEL}"
