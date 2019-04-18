@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-if ! [ -f add_extension.done ]; then
+if ! [ -f ../add_extension.done ]; then
 ###
 ### Add extensions
 ###
@@ -17,5 +17,5 @@ add_extension "https://marketplace.visualstudio.com/_apis/public/gallery/publish
 # Setup Mysql Extension
 add_extension "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/formulahendry/vsextensions/vscode-mysql/0.4.0/vspackage" "${DEBUG_LEVEL}"
 
-touch add_extension.done
+touch ../add_extension.done
 fi

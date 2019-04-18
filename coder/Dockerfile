@@ -52,6 +52,7 @@ ENV RUN_DEPS \
     ruby-full \
     nodejs \
     mysql-client \
+    socat supervisor \
     ca-certificates
 
 RUN set -x \
@@ -82,20 +83,21 @@ RUN set -x \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer self-update \
     && gem install sass -v 3.4.25 \
+    && rm -rf /etc/supervisor* \
+    && mkdir -p /etc/supervisor/conf.d \
+    && mkdir -p /var/log/supervisor \
 # ---- Add user ----
     && adduser --gecos '' --disabled-password coder \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
-ENV VSCODE_DATA "/home/coder/.local/share/code-server"
-ENV VSCODE_LOG "/home/coder/.cache/code-server/logs"
+ENV VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
+    VSCODE_DATA="/home/coder/.local/share/code-server" \
+    VSCODE_LOG="/home/coder/.cache/code-server/logs"
 
 RUN mkdir -p /run.d
-
+ADD supervisord.conf /etc/supervisor/supervisord.conf
 COPY coder-entrypoint.sh /coder-entrypoint.sh
-
 COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
-
 RUN chmod +X /coder-entrypoint.sh
 
 USER coder
@@ -116,5 +118,6 @@ VOLUME [ "/home/coder/project" ]
 
 EXPOSE 8443
 
+USER root
 
 ENTRYPOINT ["/coder-entrypoint.sh"]

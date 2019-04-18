@@ -9,6 +9,8 @@ set -u
 
 # Path to scripts to source
 _CONFIG_DIR="/coder-entrypoint.d"
+# Supervisord config directory
+_SUPERVISOR_CONFD="/etc/supervisor/conf.d"
 RUNTIME_CONFIG_DIR="/run.d"
 
 ###
@@ -38,9 +40,40 @@ for f in ${exec_script}; do
 done
 
 ###
+### Validate socat port forwards
+###
+if ! port_forward_validate "FORWARD_PORTS_TO_LOCALHOST" "${DEBUG_LEVEL}"; then
+	exit 1
+fi
+
+##
+## Supervisor: socat
+##
+for line in $( port_forward_get_lines "FORWARD_PORTS_TO_LOCALHOST" ); do
+	lport="$( port_forward_get_lport "${line}" )"
+	rhost="$( port_forward_get_rhost "${line}" )"
+	rport="$( port_forward_get_rport "${line}" )"
+	supervisor_add_service \
+		"socat-${lport}-${rhost}-${rport}" \
+		"/usr/bin/socat tcp-listen:${lport},reuseaddr,fork tcp:${rhost}:${rport}" \
+		"${_SUPERVISOR_CONFD}" \
+		"${DEBUG_LEVEL}"
+done
+
+###
+### Supervisor: php-fpm
+###
+supervisor_add_service "php-fpm"  "/usr/local/sbin/php-fpm" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
+
+###
+### Supervisor: code-server
+###
+CODESERVER_PARAMETER="$( env_get "CODESERVER_PARAMETER" "" )"
+supervisor_add_service "code-server"  "/usr/local/bin/code-server ${CODESERVER_PARAMETER}" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
+
+###
 ###
 ### Startup
 ###
-CODESERVER_PARAMETER="$( env_get "CODESERVER_PARAMETER" "" )"
-log "info" "Starting Code-Server ${CODESERVER_PARAMETER}" "${DEBUG_LEVEL}"
-exec /usr/local/bin/code-server ${CODESERVER_PARAMETER}
+log "info" "Starting supervisord" "${DEBUG_LEVEL}"
+exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

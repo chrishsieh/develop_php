@@ -22,7 +22,7 @@ git_clone() {
 	local clr_reset="\033[0m"
 
 	if [ "${debug}" -gt "1" ]; then
-		printf "${clr_red}%s \$${clr_green}git clone ${source_path} to ${folder_name}${clr_reset}\n" "$( whoami )"
+		printf "${clr_red}%s \$${clr_green} git clone ${source_path} to ${folder_name}${clr_reset}\n" "$( whoami )"
 	fi
 
 	git clone ${source_path} ${folder_name}

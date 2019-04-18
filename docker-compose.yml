@@ -10,13 +10,34 @@ services:
     environment:
       DEBUG_ENTRYPOINT: 2
       CODESERVER_PARAMETER: --allow-http --no-auth
+      FORWARD_PORTS_TO_LOCALHOST: 80:webserver:80
     volumes:
       - source_code:/home/coder/project/
       - coder_setting:/home/coder/
       - ./coder/coder-run.d/:/run.d/
     ports:
       - "8443:8443"
+    links:
+      - database
+
+  database:
+    image: mariadb
+    env_file:
+      - .env
+    volumes:
+      - db-volume:/var/lib/mysql
+
+  webserver:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    links:
+      - coder
+    volumes:
+      - source_code:/var/www/code/
 
 volumes:
   source_code: null
   coder_setting: null
+  db-volume: null
