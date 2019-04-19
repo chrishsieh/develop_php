@@ -56,7 +56,7 @@ RUN mkdir -p /run.d
 ADD supervisord.conf /etc/supervisor/supervisord.conf
 COPY coder-entrypoint.sh /coder-entrypoint.sh
 COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
-RUN chmod +X /coder-entrypoint.sh
+RUN chmod +X /coder-entrypoint.sh && chmod +X /coder-entrypoint.d/*.sh
 
 USER coder
 
