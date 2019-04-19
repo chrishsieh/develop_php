@@ -1,0 +1,14 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "php",
+			"request": "launch",
+			"name": "Listen for XDebug",
+			"port": 9001,
+			"pathMappings": {
+				"/var/www/html/": "${workspaceFolder}/src",
+			}
+		}
+	]
+}

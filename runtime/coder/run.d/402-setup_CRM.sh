@@ -14,6 +14,8 @@ run "cp BuildConfig.json.example BuildConfig.json" "${DEBUG_LEVEL}"
 run "chmod +x ./travis-ci/*.sh" "${DEBUG_LEVEL}"
 run "chmod +x ./scripts/*.sh" "${DEBUG_LEVEL}"
 run "chown -R www-data:www-data /home/coder/project/src" "${DEBUG_LEVEL}"
+run "mkdir -p ./.vscode" "${DEBUG_LEVEL}"
+run "cp /run.d/*.json ./.vscode/" "${DEBUG_LEVEL}"
 touch ../git_clone.done
 fi
 

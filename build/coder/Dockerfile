@@ -19,6 +19,11 @@ RUN set -x \
         gettext mysqli pdo_mysql exif gd zip \
     && (rm -rf /usr/local/lib/php/test/gd || true) \
     && (rm -rf /usr/local/lib/php/doc/gd || true) \
+# ---- Installing PHP Extension: xdebug ----
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && (rm -rf /usr/local/lib/php/test/xdebug || true) \
+    && (rm -rf /usr/local/lib/php/doc/xdebug || true) \
 # ---- Removing Build dependencies ----
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ${BUILD_DEPS} \
 # ---- Installing Running dependencies ----
