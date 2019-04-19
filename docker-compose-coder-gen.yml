@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  gen_coder:
+    image: chrishsieh/develop_php:coder
+    build:
+      context: ./build/coder-gen
+      args:
+        CODER_VERSION: 1.868

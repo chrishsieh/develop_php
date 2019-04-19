@@ -1,20 +1,18 @@
-version: '3.5'
+version: '3.7'
 services:
   coder:
     container_name: code-server
-#    image: chrishsieh/develop_php:coder-latest
+    image: chrishsieh/develop_php:code-server
     build:
-      context: ./coder
-      args:
-        CODER_VERSION: 1.868
+      context: ./build/coder
     environment:
       DEBUG_ENTRYPOINT: 2
       CODESERVER_PARAMETER: --allow-http --no-auth
-      FORWARD_PORTS_TO_LOCALHOST: 80:webserver:80
+      FORWARD_PORTS_TO_LOCALHOST: 8080:webserver:80
     volumes:
       - source_code:/home/coder/project/
       - coder_setting:/home/coder/
-      - ./coder/coder-run.d/:/run.d/
+      - ./runtime/coder/run.d/:/run.d/
     ports:
       - "8443:8443"
     links:
@@ -29,13 +27,14 @@ services:
 
   webserver:
     build:
-      context: ./nginx
+      context: ./build/nginx
     ports:
-      - "80:80"
+      - "8080:80"
     links:
       - coder
     volumes:
       - source_code:/var/www/code/
+      - ./runtime/nginx/default.conf:/etc/nginx/conf.d/default.conf
 
 volumes:
   source_code: null
