@@ -74,4 +74,4 @@ EXPOSE 8443
 
 USER root
 
-ENTRYPOINT ["/coder-entrypoint.sh"]
+ENTRYPOINT ["dumb-init", "/coder-entrypoint.sh"]
