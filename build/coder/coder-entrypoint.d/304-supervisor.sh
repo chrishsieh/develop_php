@@ -15,12 +15,13 @@ set -o pipefail
 supervisor_add_service() {
 	local name="${1}"
 	local command="${2}"
-	local confd="${3}"
-	local debug="${4}"
+	local user="${3}"
+	local confd="${4}"
+	local debug="${5}"
 	local priority=
 
-	if [ "${#}" -gt "4" ]; then
-		priority="${5}"
+	if [ "${#}" -gt "5" ]; then
+		priority="${6}"
 	fi
 
 	if [ ! -d "${confd}" ]; then
@@ -32,6 +33,7 @@ supervisor_add_service() {
 	{
 		echo "[program:${name}]";
 		echo "command = ${command}";
+		echo "user = ${user}";
 
 		if [ -n "${priority}" ]; then
 			echo "priority = ${priority}";

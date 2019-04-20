@@ -7,7 +7,7 @@
 			"name": "Listen for XDebug",
 			"port": 9001,
 			"pathMappings": {
-				"/var/www/html/": "${workspaceFolder}/src",
+				"/var/www/html/": "${workspaceFolder}/CRM/src",
 			}
 		}
 	]

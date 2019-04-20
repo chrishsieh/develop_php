@@ -50,13 +50,12 @@ RUN set -x \
 
 ENV VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
     VSCODE_DATA="/home/coder/.local/share/code-server" \
-    VSCODE_LOG="/home/coder/.cache/code-server/logs"
+    VSCODE_LOGS="/home/coder/.cache/code-server/logs" \
+    VSCODE_WORK_DIR="/home/coder/project" \
+    HOME="/home/coder"
 
 RUN mkdir -p /run.d
 ADD supervisord.conf /etc/supervisor/supervisord.conf
-COPY coder-entrypoint.sh /coder-entrypoint.sh
-COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
-RUN chmod +x /coder-entrypoint.sh && chmod +x /coder-entrypoint.d/*.sh
 
 USER coder
 
@@ -64,7 +63,7 @@ RUN mkdir -p /home/coder/project \
     && chmod g+rw /home/coder/project \
     && mkdir -p ${VSCODE_EXTENSIONS} \
     && mkdir -p ${VSCODE_DATA} \
-    && mkdir -p ${VSCODE_LOG}
+    && mkdir -p ${VSCODE_LOGS}
 
 WORKDIR /home/coder/project
 
@@ -73,5 +72,8 @@ VOLUME [ "/home/coder/project" ]
 EXPOSE 8443
 
 USER root
+COPY coder-entrypoint.sh /coder-entrypoint.sh
+COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
+RUN chmod +x /coder-entrypoint.sh && chmod +x /coder-entrypoint.d/*.sh
 
 ENTRYPOINT ["dumb-init", "/coder-entrypoint.sh"]

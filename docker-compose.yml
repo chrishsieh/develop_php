@@ -1,14 +1,14 @@
 version: '3.7'
 services:
-  coder:
-    container_name: code-server
+  code:
+    container_name: code
     image: chrishsieh/develop_php:code-server
-#    build:
-#      context: ./build/coder
+    build:
+      context: ./build/coder
     environment:
       DEBUG_ENTRYPOINT: 2
       CODESERVER_PARAMETER: --allow-http --no-auth
-      FORWARD_PORTS_TO_LOCALHOST: 8080:webserver:80
+      FORWARD_PORTS_TO_LOCALHOST: 8080:web:80
     volumes:
       - source_code:/home/coder/project/
       - coder_setting:/home/coder/
@@ -16,22 +16,24 @@ services:
     ports:
       - "8443:8443"
     links:
-      - database
+      - db
 
-  database:
+  db:
+    container_name: db
     image: mariadb
     env_file:
       - .env
     volumes:
       - db-volume:/var/lib/mysql
 
-  webserver:
+  web:
+    container_name: web
     build:
       context: ./build/nginx
     ports:
       - "8080:80"
     links:
-      - coder
+      - code
     volumes:
       - source_code:/var/www/code/
       - ./runtime/nginx/default.conf:/etc/nginx/conf.d/default.conf

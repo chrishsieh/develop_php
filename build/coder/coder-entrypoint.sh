@@ -55,7 +55,7 @@ for line in $( port_forward_get_lines "FORWARD_PORTS_TO_LOCALHOST" ); do
 	rport="$( port_forward_get_rport "${line}" )"
 	supervisor_add_service \
 		"socat-${lport}-${rhost}-${rport}" \
-		"/usr/bin/socat tcp-listen:${lport},reuseaddr,fork tcp:${rhost}:${rport}" \
+		"/usr/bin/socat tcp-listen:${lport},reuseaddr,fork tcp:${rhost}:${rport}" "root" \
 		"${_SUPERVISOR_CONFD}" \
 		"${DEBUG_LEVEL}"
 done
@@ -63,13 +63,15 @@ done
 ###
 ### Supervisor: php-fpm
 ###
-supervisor_add_service "php-fpm"  "/usr/local/sbin/php-fpm" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
+supervisor_add_service "php-fpm"  "/usr/local/sbin/php-fpm" "root" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
 
 ###
 ### Supervisor: code-server
 ###
 CODESERVER_PARAMETER="$( env_get "CODESERVER_PARAMETER" "" )"
-supervisor_add_service "code-server"  "/usr/local/bin/code-server ${CODESERVER_PARAMETER}" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
+supervisor_add_service "code-server"  "/usr/local/bin/code-server --extensions-dir=${VSCODE_EXTENSIONS} --user-data-dir=${VSCODE_DATA} ${CODESERVER_PARAMETER} ${VSCODE_WORK_DIR}" "coder" \
+			"${_SUPERVISOR_CONFD}" \
+			"${DEBUG_LEVEL}"
 
 ###
 ###
