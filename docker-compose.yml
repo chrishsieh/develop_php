@@ -3,8 +3,8 @@ services:
   code:
     container_name: code
     image: chrishsieh/develop_php:code-server
-    build:
-      context: ./build/coder
+#    build:
+#      context: ./build/coder
     environment:
       DEBUG_ENTRYPOINT: 2
       CODESERVER_PARAMETER: --allow-http --no-auth
