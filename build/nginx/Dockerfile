@@ -1,6 +1,6 @@
 FROM nginx:alpine
 MAINTAINER ChurchCRM
-RUN mkdir -p /var/www/code/src \
+RUN mkdir -p /var/www/code/CRM/src \
     && cd /var/www \
     && rm -rf /var/www/html \
-    && ln -s /var/www/code/src html
+    && ln -s /var/www/code/CRM/src html
