@@ -1,7 +1,5 @@
 FROM php:fpm
 
-COPY --from=chrishsieh/develop_php:coder /usr/local/bin/code-server /usr/local/bin/code-server
-
 ENV BUILD_DEPS="cmake libicu-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libzip-dev" \
     RUN_DEPS="openssl net-tools sudo dumb-init bsdtar gettext jq zip git unzip locales locales-all wget curl \
             libfreetype6 libjpeg62-turbo libpng16-16 libzip4 ruby-full nodejs mysql-client \
@@ -32,6 +30,8 @@ RUN set -x \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false apt-utils \
     && rm -rf /var/lib/apt/lists/* \
     && update-ca-certificates
+
+COPY --from=chrishsieh/develop_php:coder /usr/local/bin/code-server /usr/local/bin/code-server
 
 # ---- Installing Running env ----
 RUN set -x \
