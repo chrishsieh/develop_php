@@ -1,8 +1,8 @@
 FROM php:fpm
 
-ENV BUILD_DEPS="cmake libicu-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libzip-dev" \
+ENV BUILD_DEPS="cmake libicu-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libzip-dev libmagickwand-dev" \
     RUN_DEPS="openssl net-tools sudo dumb-init bsdtar gettext jq zip git unzip locales locales-all wget curl \
-            libfreetype6 libjpeg62-turbo libpng16-16 libzip4 ruby-full nodejs mysql-client \
+            libfreetype6 libjpeg62-turbo libpng16-16 libzip4 ruby-full nodejs mysql-client libmagickwand-6.q16-3 \
             socat supervisor ca-certificates"
 
 RUN set -x \
@@ -17,6 +17,11 @@ RUN set -x \
         gettext mysqli pdo_mysql exif gd zip \
     && (rm -rf /usr/local/lib/php/test/gd || true) \
     && (rm -rf /usr/local/lib/php/doc/gd || true) \
+# ---- Installing PHP Extension: imagick ----
+	&& pecl install imagick \
+	&& docker-php-ext-enable imagick \
+	&& (rm -rf /usr/local/lib/php/test/imagick || true) \
+	&& (rm -rf /usr/local/lib/php/doc/imagick || true) \
 # ---- Installing PHP Extension: xdebug ----
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
