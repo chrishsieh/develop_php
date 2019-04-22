@@ -3,9 +3,5 @@ services:
   selenium:
     container_name: selenium
     image: selenium/standalone-chrome
-    environment:
-      - VNC_NO_PASSWORD=1
-    ports:
-      - "5900:5900"
     volumes:
       - /dev/shm:/dev/shm

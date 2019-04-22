@@ -6,7 +6,7 @@
 ## Vagrant version
 Vagrant.require_version ">= 1.7.4"
 
-$forwarded_ports = { 8080 => 8080, 443 => 443, 8443 => 8443 }
+$forwarded_ports = { 8080 => 8080, 443 => 443, 8443 => 8443, 8000 => 8000, 1080 => 1080, 80 => 80 }
 
 # Make sure the vagrant-ignition plugin is installed
 #required_plugins = %w{ vagrant-winnfsd }
