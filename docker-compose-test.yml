@@ -1,11 +1,5 @@
 version: '3.7'
 services:
-  mailcatcher:
-    container_name: mailcatcher
-    image: schickling/mailcatcher
-    ports:
-      - "${DEV_MAILCATCHER_PORT:-1080}:1080"
-
   selenium:
     container_name: selenium
     image: selenium/standalone-chrome

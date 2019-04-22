@@ -40,14 +40,6 @@ services:
       - source_code:/var/www/
       - ./runtime/nginx/default.conf:/etc/nginx/conf.d/default.conf
 
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin
-    links:
-      - db
-    ports:
-      - "${DEV_PHPMYADMIN_PORT:-8000}:80"
-
 volumes:
   source_code: null
   coder_setting: null

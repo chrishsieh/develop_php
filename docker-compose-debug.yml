@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    ports:
+      - "${DEV_PHPMYADMIN_PORT:-8000}:80"
+  mailcatcher:
+    container_name: mailcatcher
+    image: schickling/mailcatcher
+    ports:
+      - "${DEV_MAILCATCHER_PORT:-1080}:1080"
+
+volumes:
+  source_code: null
+  coder_setting: null
+  db_data: null

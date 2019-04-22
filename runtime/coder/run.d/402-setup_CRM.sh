@@ -9,16 +9,22 @@ if ! [ -f git_clone.done ]; then
     run "usermod -a -G www-data coder" "${DEBUG_LEVEL}"
     run "mkdir -p ./.vscode" "${DEBUG_LEVEL}"
     run "cp /run.d/*.json ./.vscode/" "${DEBUG_LEVEL}"
+    run "cp /run.d/test-data.init ./test-data-init.sh" "${DEBUG_LEVEL}"
+    run "chmod +x ./test-data-init.sh" "${DEBUG_LEVEL}"
+    run "cp /run.d/quick-install ./quick-install.sh" "${DEBUG_LEVEL}"
+    run "chmod +x ./quick-install.sh" "${DEBUG_LEVEL}"
     git_clone "https://github.com/ChurchCRM/CRM.git" "CRM" "${DEBUG_LEVEL}"
 
     cd CRM
     run "cp BuildConfig.json.example BuildConfig.json" "${DEBUG_LEVEL}"
     run "chmod +x ./travis-ci/*.sh" "${DEBUG_LEVEL}"
     run "chmod +x ./scripts/*.sh" "${DEBUG_LEVEL}"
+
+    cd src
     run "find . -type d -exec chmod -R 775 {} \;" "${DEBUG_LEVEL}"
     run "find . -type f -exec chmod -R 664 {} \;" "${DEBUG_LEVEL}"
 
-    cd ..
+    cd ../..
     run "chown -R coder:www-data CRM" "${DEBUG_LEVEL}"
     touch git_clone.done
 fi
