@@ -24,5 +24,4 @@ if ! [ -f git_clone.done ]; then
 fi
 
 run "rm -rf /var/www/html" "${DEBUG_LEVEL}"
-run "ln -s /home/coder/project/CRM/src /var/www/html" "${DEBUG_LEVEL}"
-run "export VSCODE_WORK_DIR=/home/coder/project/CRM" "${DEBUG_LEVEL}"
+run "ln -s /var/www/CRM/src /var/www/html" "${DEBUG_LEVEL}"

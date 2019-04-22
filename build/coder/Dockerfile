@@ -51,7 +51,7 @@ RUN set -x \
 ENV VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
     VSCODE_DATA="/home/coder/.local/share/code-server" \
     VSCODE_LOGS="/home/coder/.cache/code-server/logs" \
-    VSCODE_WORK_DIR="/home/coder/project" \
+    VSCODE_WORK_DIR="/var/www" \
     HOME="/home/coder"
 
 RUN mkdir -p /run.d
@@ -59,15 +59,13 @@ ADD supervisord.conf /etc/supervisor/supervisord.conf
 
 USER coder
 
-RUN mkdir -p /home/coder/project \
-    && chmod g+rw /home/coder/project \
-    && mkdir -p ${VSCODE_EXTENSIONS} \
+RUN mkdir -p ${VSCODE_EXTENSIONS} \
     && mkdir -p ${VSCODE_DATA} \
     && mkdir -p ${VSCODE_LOGS}
 
-WORKDIR /home/coder/project
+WORKDIR /var/www
 
-VOLUME [ "/home/coder/project" ]
+VOLUME [ "/var/www" ]
 
 EXPOSE 8443
 
