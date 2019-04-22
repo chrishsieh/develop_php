@@ -7,8 +7,10 @@ services:
 #      context: ./build/coder
     environment:
       DEBUG_ENTRYPOINT: 2
-      CODESERVER_PARAMETER: --allow-http --no-auth
-      FORWARD_PORTS_TO_LOCALHOST: 8080:web:80
+      CODESERVER_PARAMETER: ${DEV_CODESERVER_PARA:--allow-http --no-auth}
+      FORWARD_PORTS_TO_LOCALHOST: ${DEV_WEB_PORT:-80}:web:80
+      EN_XDEBUG: ${DEV_EN_XDEBUG:-false}
+      MYSQL_DB_HOST: ${MYSQL_DB_HOST:-db}
     volumes:
       - source_code:/var/www/
       - coder_setting:/home/coder/
@@ -31,12 +33,20 @@ services:
     container_name: web
     image: nginx:alpine
     ports:
-      - "8080:80"
+      - "${DEV_WEB_PORT:-80}:80"
     links:
       - code
     volumes:
       - source_code:/var/www/
       - ./runtime/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db
+    ports:
+      - "${DEV_PHPMYADMIN_PORT:-8000}:80"
 
 volumes:
   source_code: null
