@@ -1,5 +1,4 @@
 set_db(){
-    set -x
     cd CRM
 
     # Import Docker Secrets
