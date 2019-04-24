@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  gen_coder-alpine:
+    image: chrishsieh/develop_php:coder-alpine
+    build:
+      context: ./build/coder.alpine/coder-gen
+      args:
+        CODER_VERSION: 1.939

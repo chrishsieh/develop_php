@@ -63,7 +63,7 @@ done
 ###
 ### Supervisor: php-fpm
 ###
-supervisor_add_service "php-fpm" "/usr/local/sbin/php-fpm" "root" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
+supervisor_add_service "php-fpm"  "/usr/local/sbin/php-fpm" "root" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
 
 ###
 ### Supervisor: code-server

@@ -2,9 +2,9 @@ version: '3.7'
 services:
   code:
     container_name: code
-    image: chrishsieh/develop_php:code-server
+    image: chrishsieh/develop_php:code-server-alpine
     build:
-      context: ./build/coder
+      context: ./build/coder.alpine
     environment:
       DEBUG_ENTRYPOINT: 2
       CODESERVER_PARAMETER: ${DEV_CODESERVER_PARA:--allow-http --no-auth}
@@ -14,11 +14,13 @@ services:
     volumes:
       - source_code:/var/www/
       - coder_setting:/home/coder/
-      - ./runtime/coder/run.d/:/run.d/
+      - ./runtime/coder.alpine/run.d/:/run.d/
     ports:
       - "8443:8443"
     links:
       - db
+    cap_add:
+      - ALL
 
   db:
     container_name: db
