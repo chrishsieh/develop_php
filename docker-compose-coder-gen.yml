@@ -3,6 +3,6 @@ services:
   gen_coder:
     image: chrishsieh/develop_php:coder
     build:
-      context: ./build/coder-gen
+      context: ./build/coder/coder-gen
       args:
         CODER_VERSION: 1.939

@@ -1,4 +1,4 @@
-FROM php:fpm
+FROM php:fpm as builder
 
 ARG CODER_VERSION
 
@@ -33,3 +33,7 @@ RUN set -x \
         libxkbfile-dev libsecret-1-dev nodejs git gcc python \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false apt-utils \
     && rm -rf /var/lib/apt/lists/* /root/.nbin /root/.npm /root/.node-gyp /usr/lib/python3.5 /tmp/*
+
+FROM scratch
+
+COPY --from=builder /usr/local/bin/code-server /code-server
