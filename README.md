@@ -1,6 +1,6 @@
 # develop_php
 Docker system for php develop, include online VSCode, PHP developement setting,
-setting reference from https://github.com/devilbox/docker-php-fpm.
+setting reference from https://github.com/devilbox/docker-php-fpm and https://github.com/theia-ide/theia-apps.
 
 # Quick Start
 1. Virtual machine memory requirement 3072MB.

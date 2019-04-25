@@ -63,13 +63,13 @@ done
 ###
 ### Supervisor: php-fpm
 ###
-supervisor_add_service "php-fpm"  "/usr/local/sbin/php-fpm" "root" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
+supervisor_add_service "php-fpm" "/usr/local/sbin/php-fpm" "root" "${_SUPERVISOR_CONFD}" "${DEBUG_LEVEL}"
 
 ###
 ### Supervisor: code-server
 ###
 CODESERVER_PARAMETER="$( env_get "CODESERVER_PARAMETER" "" )"
-supervisor_add_service "code-server"  "/usr/local/bin/code-server --extensions-dir=${VSCODE_EXTENSIONS} --user-data-dir=${VSCODE_DATA} ${CODESERVER_PARAMETER} ${VSCODE_WORK_DIR}" "coder" \
+supervisor_add_service "code-server" "/usr/local/bin/code-server --extensions-dir=${VSCODE_EXTENSIONS} --user-data-dir=${VSCODE_DATA} ${CODESERVER_PARAMETER} ${VSCODE_WORK_DIR}" "coder" \
 			"${_SUPERVISOR_CONFD}" \
 			"${DEBUG_LEVEL}"
 

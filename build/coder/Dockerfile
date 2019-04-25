@@ -36,7 +36,7 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/* \
     && update-ca-certificates
 
-COPY --from=chrishsieh/develop_php:coder /code-server /usr/local/bin/code-server
+COPY --from=chrishsieh/develop_php:coder-stretch-slim /code-server /usr/local/bin/code-server
 
 # ---- Installing Running env ----
 RUN set -x \

@@ -1,9 +1,10 @@
 #!/bin/bash
-if [[ "$(docker images -q ${DOCKER_REPO}:coder${CODER_VERSION} 2> /dev/null)" == "" ]]; then
-echo "=> No need build"
+docker images -q ${DOCKER_REPO}:coder-stretch-slim${CODER_VERSION}
+if [[ "$(docker images -q ${DOCKER_REPO}:coder-stretch-slim${CODER_VERSION} 2> /dev/null)" == "" ]]; then
+echo "=> Building the coder-stretch-slim"
+docker build --build-arg CODER_VERSION=$CODER_VERSION -t $DOCKER_REPO:coder-stretch-slim -t $DOCKER_REPO:coder-stretch-slim$CODER_VERSION - < ${PWD}/coder-gen/Dockerfile
+docker push $DOCKER_REPO:coder-stretch-slim
+docker push $DOCKER_REPO:coder-stretch-slim$CODER_VERSION
 else
-echo "=> Building the coder"
-docker build --build-arg CODER_VERSION=$CODER_VERSION -t $DOCKER_REPO:coder -t $DOCKER_REPO:coder$CODER_VERSION - < ${PWD}/coder-gen/Dockerfile
-docker push $DOCKER_REPO:coder
-docker push $DOCKER_REPO:coder$CODER_VERSION
+echo "=> No need build"
 fi
