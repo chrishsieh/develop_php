@@ -8,11 +8,10 @@ set -o pipefail
 if ! [ -f git_clone.done ]; then
     run "usermod -a -G www-data coder" "${DEBUG_LEVEL}"
     run "mkdir -p ./.vscode" "${DEBUG_LEVEL}"
-    run "cp /run.d/*.json ./.vscode/" "${DEBUG_LEVEL}"
-    run "cp /run.d/test-data.init ./test-data-init.sh" "${DEBUG_LEVEL}"
-    run "chmod +x ./test-data-init.sh" "${DEBUG_LEVEL}"
-    run "cp /run.d/quick-install ./quick-install.sh" "${DEBUG_LEVEL}"
-    run "chmod +x ./quick-install.sh" "${DEBUG_LEVEL}"
+    run "cp /setting/*.json ./.vscode/" "${DEBUG_LEVEL}"
+    run "cp /setting/*.sh ." "${DEBUG_LEVEL}"
+    run "chmod +x ./*.sh" "${DEBUG_LEVEL}"
+    run "chown -R coder:coder ." "${DEBUG_LEVEL}"
     git_clone "https://github.com/ChurchCRM/CRM.git" "CRM" "${DEBUG_LEVEL}"
 
     cd CRM

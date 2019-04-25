@@ -1,6 +1,9 @@
 #!/bin/bash
-docker images -q ${DOCKER_REPO}:coder-stretch-slim${CODER_VERSION}
-if [[ "$(docker images -q ${DOCKER_REPO}:coder-stretch-slim${CODER_VERSION} 2> /dev/null)" == "" ]]; then
+echo "check tag coder-stretch-slim${CODER_VERSION}"
+docker images -q ${DOCKER_REPO:16}:coder-stretch-slim${CODER_VERSION}
+echo "check all tag"
+docker images -q ${DOCKER_REPO:16}
+if [[ "$(docker images -q ${DOCKER_REPO:16}:coder-stretch-slim${CODER_VERSION})" == "" ]]; then
 echo "=> Building the coder-stretch-slim"
 docker build --build-arg CODER_VERSION=$CODER_VERSION -t $DOCKER_REPO:coder-stretch-slim -t $DOCKER_REPO:coder-stretch-slim$CODER_VERSION - < ${PWD}/coder-gen/Dockerfile
 docker push $DOCKER_REPO:coder-stretch-slim

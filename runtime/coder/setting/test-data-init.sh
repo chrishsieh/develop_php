@@ -7,7 +7,7 @@ set_db(){
     local MYSQL_USER_DB=churchcrm_test
     local MYSQL_ROOT_PWD=changeme
 
-    sudo chown coder:www-data CRM/src/Include/Config.php
+    sudo chown coder:www-data src/Include/Config.php
     sed -i "s/sSERVERNAME = \(.*\);/sSERVERNAME = '$MYSQL_DB_HOST';/g" /var/www/CRM/travis-ci/Config.php
     sed -i "s/sUSER = \(.*\);/sUSER = '$MYSQL_USER';/g" /var/www/CRM/travis-ci/Config.php
     sed -i "s/sPASSWORD = \(.*\);/sPASSWORD = '$MYSQL_USER_PWD';/g" /var/www/CRM/travis-ci/Config.php

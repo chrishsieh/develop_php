@@ -13,8 +13,9 @@ services:
       MYSQL_DB_HOST: ${MYSQL_DB_HOST:-db}
     volumes:
       - source_code:/var/www/
-      - coder_setting:/home/coder/
+      - coder_setting:/home/coder/:cached
       - ./runtime/coder/run.d/:/run.d/
+      - ./runtime/coder/setting/:/setting/
     ports:
       - "8443:8443"
     links:
