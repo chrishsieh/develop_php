@@ -1,13 +1,18 @@
 #!/bin/bash
-echo "check tag coder-stretch-slim${CODER_VERSION}"
-docker images -q ${DOCKER_REPO:16}:coder-stretch-slim${CODER_VERSION}
-echo "check all tag"
-docker images -q ${DOCKER_REPO:16}
-if [[ "$(docker images -q ${DOCKER_REPO:16}:coder-stretch-slim${CODER_VERSION})" == "" ]]; then
-echo "=> Building the coder-stretch-slim"
-docker build --build-arg CODER_VERSION=$CODER_VERSION -t $DOCKER_REPO:coder-stretch-slim -t $DOCKER_REPO:coder-stretch-slim$CODER_VERSION - < ${PWD}/coder-gen/Dockerfile
-docker push $DOCKER_REPO:coder-stretch-slim
-docker push $DOCKER_REPO:coder-stretch-slim$CODER_VERSION
-else
+set -x
+coderlist=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url') || true
+coderpath=$(echo $coderlist | cut -d '"' -f 4) || true
+coderver=$(echo $coderpath | cut -d '/' -f 8) || true
+id=$(docker create ${DOCKER_REPO:16}:latest) || true
+docker cp ${id}:/etc/CODER_VER out.txt
+docker rm -v $id || true
+build_ver="$(<out.txt)" || true
+
+if [[ ${coderver} == ${build_ver} ]]; then
 echo "=> No need build"
+else
+echo "=> Building the coder-stretch-slim"
+docker build --build-arg CODER_VERSION=$coderver -t $DOCKER_REPO:coder-stretch-slim -t $DOCKER_REPO:coder-stretch-slim$coderver - < ${PWD}/coder-gen/Dockerfile
+docker push $DOCKER_REPO:coder-stretch-slim
+docker push $DOCKER_REPO:coder-stretch-slim$coderver
 fi

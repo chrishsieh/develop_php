@@ -37,6 +37,7 @@ RUN set -x \
     && update-ca-certificates
 
 COPY --from=chrishsieh/develop_php:coder-stretch-slim /code-server /usr/local/bin/code-server
+COPY --from=chrishsieh/develop_php:coder-stretch-slim /etc/CODER_VER /etc/CODER_VER
 
 # ---- Installing Running env ----
 RUN set -x \
