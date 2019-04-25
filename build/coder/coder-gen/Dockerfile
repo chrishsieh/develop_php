@@ -24,7 +24,7 @@ RUN set -x \
     && cd /usr/src/coder \
     && yarn && NODE_ENV=production yarn task build:server:binary \
     && cp /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server \
-    && echo "${CODER_VERSION}" > /usr/local/bin/CODER_VER
+    && echo "${CODER_VERSION}" > /usr/local/bin/CODER_VER \
     && cd /usr/src \
     && rm -rf /usr/src/coder \
     && yarn cache clean \
