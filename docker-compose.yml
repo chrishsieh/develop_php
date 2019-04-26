@@ -23,7 +23,6 @@ services:
 
   db:
     container_name: db
-#    image: mariadb
     image: yobasystems/alpine-mariadb
     env_file:
       - .env
