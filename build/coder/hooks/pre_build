@@ -1,18 +1,21 @@
 #!/bin/bash
+
 coderlist=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url') || true
 coderpath=$(echo $coderlist | cut -d '"' -f 4) || true
-export coderver=$(echo $coderpath | cut -d '/' -f 8)
+coderver=$(echo $coderpath | cut -d '/' -f 8)
+
 id=$(docker create ${DOCKER_REPO:16}:code-server) || true
 docker cp ${id}:/etc/CODER_VER out.txt
 docker rm -v $id || true
 build_ver="$(<out.txt)" || true
+
 echo "coder lastet version: ${coderver}, builded version: ${build_ver}"
 
 if [[ ${coderver} == ${build_ver} ]]; then
-echo "=> No need build"
+	echo "=> No need build"
 else
-echo "=> Building the coder-stretch-slim"
-docker build --build-arg CODER_VERSION=$coderver -t $DOCKER_REPO:coder-stretch-slim -t $DOCKER_REPO:coder-stretch-slim$coderver - < ${PWD}/coder-gen/Dockerfile
-docker push $DOCKER_REPO:coder-stretch-slim
-docker push $DOCKER_REPO:coder-stretch-slim$coderver
+	echo "=> Building the coder-stretch-slim"
+	docker build --build-arg CODER_VERSION=$coderver -t $DOCKER_REPO:coder-stretch-slim -t $DOCKER_REPO:coder-stretch-slim$coderver - < ${PWD}/coder-gen/Dockerfile
+	docker push $DOCKER_REPO:coder-stretch-slim
+	docker push $DOCKER_REPO:coder-stretch-slim$coderver
 fi

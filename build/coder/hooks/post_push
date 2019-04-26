@@ -1,6 +1,8 @@
 #!/bin/bash
-set -x
-echo "coderver = ${coderver}"
-env
-docker tag $IMAGE_NAME $DOCKER_REPO:code-server$coderver
-docker push $DOCKER_REPO:code-server$coderver
+id=$(docker create ${DOCKER_REPO:16}:code-server) || true
+docker cp ${id}:/etc/CODER_VER out.txt
+docker rm -v $id || true
+build_ver="$(<out.txt)" || true
+
+docker tag $IMAGE_NAME $DOCKER_REPO:code-server$build_ver
+docker push $DOCKER_REPO:code-server$build_ver
