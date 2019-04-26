@@ -7,7 +7,7 @@ services:
 #      context: ./build/coder
     environment:
       DEBUG_ENTRYPOINT: 2
-      CODESERVER_PARAMETER: ${DEV_CODESERVER_PARA:--allow-http --no-auth}
+      CODESERVER_PARAMETER: ${DEV_CODESERVER_PARA:-}
       FORWARD_PORTS_TO_LOCALHOST: ${DEV_WEB_PORT:-80}:web:80
       EN_XDEBUG: ${DEV_EN_XDEBUG:-false}
       MYSQL_DB_HOST: ${MYSQL_DB_HOST:-db}
@@ -25,11 +25,13 @@ services:
       - ./runtime/coder/setting/:/setting/
       - ./runtime/coder/setting/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
       - ${DEV_LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
-      - ${DEV_CERTS_FOLDER:-./keys}/certs:/certs               #certs folder
+      - ${DEV_CERTS_FOLDER:-./keys}/certs:/certs:ro            #certs folder
     ports:
       - "8443:8443"
     links:
       - db
+    secrets:
+      - ssl
 
   db:
     container_name: db
