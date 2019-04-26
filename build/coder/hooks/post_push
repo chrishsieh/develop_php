@@ -1,4 +1,6 @@
 #!/bin/bash
-echo "${coderver}"
+set -x
+echo "coderver = ${coderver}"
+env
 docker tag $IMAGE_NAME $DOCKER_REPO:code-server$coderver
 docker push $DOCKER_REPO:code-server$coderver
