@@ -1,3 +1,4 @@
 #!/bin/bash
+echo "${coderver}"
 docker tag $IMAGE_NAME $DOCKER_REPO:code-server$coderver
 docker push $DOCKER_REPO:code-server$coderver
