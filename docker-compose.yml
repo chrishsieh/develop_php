@@ -23,8 +23,9 @@ services:
       - project:/home/coder/project
       - ./runtime/coder/run.d/:/run.d/
       - ./runtime/coder/setting/:/setting/
-#      - ./runtime/coder/setting/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
-#      - ${DEV_LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
+      - ./runtime/coder/setting/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ${DEV_LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
+      - ${DEV_CERTS_FOLDER:-./keys}/certs:/certs               #certs folder
     ports:
       - "8443:8443"
     links:
