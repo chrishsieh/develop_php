@@ -11,12 +11,20 @@ services:
       FORWARD_PORTS_TO_LOCALHOST: ${DEV_WEB_PORT:-80}:web:80
       EN_XDEBUG: ${DEV_EN_XDEBUG:-false}
       MYSQL_DB_HOST: ${MYSQL_DB_HOST:-db}
+      VIRTUAL_HOST: ${DEV_VIRTUAL_HOST:-dev.localtest.me}
+      VIRTUAL_PROTO: fastcgi
+      VIRTUAL_ROOT: /var/www/html
+      VIRTUAL_PORT: 9000
+      ENABLE_ACME: ${DEV_ENABLE_ACME:-false}                  ##### letsencrypt setting
+      ENABLE_HSTS: ${DEV_ENABLE_HSTS:-false}
     volumes:
       - source_code:/var/www/
       - coder_setting:/home/coder/:cached
       - project:/home/coder/project
       - ./runtime/coder/run.d/:/run.d/
       - ./runtime/coder/setting/:/setting/
+#      - ./runtime/coder/setting/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+#      - ${DEV_LOG_FOLDER:-./log}/php:/usr/local/var/log        #### log
     ports:
       - "8443:8443"
     links:
@@ -32,17 +40,42 @@ services:
 
   web:
     container_name: web
-    image: nginx:alpine
+    image: chrishsieh/nginx-proxy:latest
+    environment:
+      - DEFAULT_HOST=${DEV_DEFAULT_HOST:-myapp.localtest.me}
     ports:
       - "${DEV_WEB_PORT:-80}:80"
-    links:
-      - code
+      - "443:443"
     volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - dhparam-volume:/etc/nginx/dhparam/
+      - ./runtime/nginx/vhost.d/:/etc/nginx/vhost.d:ro
+      - ./runtime/nginx/stream.d/:/etc/nginx/stream.d
+      - ./runtime/nginx/proxy.conf:/etc/nginx/proxy.conf:ro
+      - ./runtime/nginx/nginx.tmpl:/app/nginx.tmpl:ro
+      - ${DEV_CERTS_FOLDER:-./keys}/acme:/acmecerts                #acme.sh install folder
+      - ${DEV_CERTS_FOLDER:-./keys}/certs:/etc/nginx/certs         #certs folder
+      - ./runtime/nginx/updatessl.sh:/app/prechk
+      - ${DEV_LOG_FOLDER:-./log}/nginx:/var/log/nginx              #log
       - source_code:/var/www/
-      - ./runtime/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+    secrets:
+      - dns_api
+      - ssl
+    networks:
+      default:
+        #### setting for services call web server by host name
+        aliases:
+          - ${DEV_VIRTUAL_HOST:-dev.localtest.me}
 
 volumes:
   source_code:
   coder_setting:
   db_data:
   project:
+
+secrets:
+  dns_api:
+    file: ${DEV_DNS_API_SRCRETS:-./secrets/dns_api.json}
+  ssl:
+    file: ${DEV_SSL_SRCRETS:-./secrets/ssl.json}
