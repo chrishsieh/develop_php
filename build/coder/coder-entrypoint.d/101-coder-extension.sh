@@ -26,7 +26,9 @@ add_extension() {
 		printf "${clr_red}%s \$${clr_green} install extension ${folder_name}${clr_reset}\n" "$( whoami )"
 	fi
 	mkdir -p ${VSCODE_EXTENSIONS}/${folder_name}
-	curl -JL --retry 10 ${extension_path} | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${folder_name} extension
+	curl -JLs --retry 10 ${extension_path} --output ext.vsix
+	bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/${folder_name} extension < ext.vsix
+	rm ext.vsix
 }
 
 ############################################################
