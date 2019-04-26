@@ -4,5 +4,5 @@ services:
     image: chrishsieh/develop_php:coder-stretch-slim
     build:
       context: ./build/coder/coder-gen
-      args:
-        CODER_VERSION: 1.939
+#      args:
+#        CODER_VERSION: "1.868"

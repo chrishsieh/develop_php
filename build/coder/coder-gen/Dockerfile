@@ -1,15 +1,18 @@
 ARG NODE_VERSION=10
 FROM node:${NODE_VERSION}-stretch-slim as builder-stretch-slim
-ARG CODER_VERSION=1.939-vsc1.33.1
+ARG CODER_VERSION
 ENV CODER_VERSION $CODER_VERSION
 
 RUN set -x \
     && cd /usr/src \
     && set +x \
     && coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url') \
+    && if [ -n "${CODER_VERSION}" ]; then coderlatest=$(echo $coderlatest | tr "," "\n" | grep "${CODER_VERSION}"); fi \
     && coderlatest=$(echo $coderlatest | cut -d '"' -f 4) \
     && curl -LOs $coderlatest \
-    && coderfile=$(echo $coderlatest| cut -d '/' -f 8) \
+    && export coderfile=$(echo $coderlatest| cut -d '/' -f 8) \
+    && echo "${coderfile}" \
+    && echo "${coderfile}" > /usr/local/bin/CODER_VER \
     && tar zxf $coderfile \
     && rm -rf $coderfile \
     && coderfolder=$(ls | grep "codercom-code-server") \
@@ -24,7 +27,6 @@ RUN set -x \
     && cd /usr/src/coder \
     && yarn && NODE_ENV=production yarn task build:server:binary \
     && cp /usr/src/coder/packages/server/cli-linux-x64 /usr/local/bin/code-server \
-    && echo "${CODER_VERSION}" > /usr/local/bin/CODER_VER \
     && cd /usr/src \
     && rm -rf /usr/src/coder \
     && yarn cache clean \
