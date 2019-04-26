@@ -2,7 +2,7 @@
 set -x
 coderlist=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url') || true
 coderpath=$(echo $coderlist | cut -d '"' -f 4) || true
-coderver=$(echo $coderpath | cut -d '/' -f 8) || true
+export coderver=$(echo $coderpath | cut -d '/' -f 8))
 id=$(docker create ${DOCKER_REPO:16}:code-server) || true
 docker cp ${id}:/etc/CODER_VER out.txt
 docker rm -v $id || true
