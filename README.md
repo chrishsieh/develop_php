@@ -13,3 +13,4 @@ setting reference from https://github.com/devilbox/docker-php-fpm and https://gi
 1. Build coder(need memory 3072MB) ```docker-compose -f coder-gen.yml build``` then remove docker-compose.yml build mask and ```docker-compose build```.
 1. http://localhost:8443 for coder(online VSCode), do PHP development build command.
 1. http://localhost:8080 for web. http://localhost:8000 for phpmyadmin. http://localhost:1080 for mailcatcher.
+1. http://localhost:9000 for portainer.
