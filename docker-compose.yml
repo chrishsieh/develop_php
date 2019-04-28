@@ -8,7 +8,7 @@ services:
     environment:
       DEBUG_ENTRYPOINT: 2
       CODESERVER_PARAMETER: ${DEV_CODESERVER_PARA:-}
-      FORWARD_PORTS_TO_LOCALHOST: ${DEV_WEB_PORT:-80}:web:80
+      FORWARD_PORTS_TO_LOCALHOST: ${DEV_WEB_HTTP_PORT:-80}:web:80,${DEV_WEB_HTTPS_PORT:-443}:web:443
       EN_XDEBUG: ${DEV_EN_XDEBUG:-false}
       MYSQL_DB_HOST: ${MYSQL_DB_HOST:-db}
       VIRTUAL_HOST: ${DEV_VIRTUAL_HOST:-dev.localtest.me}
@@ -47,8 +47,8 @@ services:
     environment:
       - DEFAULT_HOST=${DEV_DEFAULT_HOST:-myapp.localtest.me}
     ports:
-      - "${DEV_WEB_PORT:-80}:80"
-      - "443:443"
+      - "${DEV_WEB_HTTP_PORT:-80}:80"
+      - "${DEV_WEB_HTTPS_PORT:-443}:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - dhparam-volume:/etc/nginx/dhparam/
@@ -76,6 +76,7 @@ volumes:
   coder_setting:
   db_data:
   project:
+  dhparam-volume:
 
 secrets:
   dns_api:
