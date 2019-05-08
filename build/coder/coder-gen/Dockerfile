@@ -6,7 +6,7 @@ ENV CODER_VERSION $CODER_VERSION
 RUN set -x \
     && cd /usr/src \
     && set +x \
-    && coderlatest=$(curl -s https://api.github.com/repos/codercom/code-server/tags | grep 'tarball_url') \
+    && coderlatest=$(curl -s https://api.github.com/repos/cdr/code-server/tags | grep 'tarball_url') \
     && if [ -n "${CODER_VERSION}" ]; then coderlatest=$(echo $coderlatest | tr "," "\n" | grep "${CODER_VERSION}"); fi \
     && coderlatest=$(echo $coderlatest | cut -d '"' -f 4) \
     && curl -LOs $coderlatest \
