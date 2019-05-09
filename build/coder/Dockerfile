@@ -18,7 +18,7 @@ RUN set -x \
     && (rm -rf /usr/local/lib/php/test/exif || true) \
     && (rm -rf /usr/local/lib/php/doc/exif || true) \
 # ---- Installing PHP Extension: gd ----
-    && /usr/local/bin/docker-php-ext-configure gd --with-gd --with-png-dir=/usr --with-zlib-dir=/usr --with-jpeg-dir=/usr --with-freetype-dir=/usr --enable-gd-jis-conv \
+    && /usr/local/bin/docker-php-ext-configure gd --with-gd --with-png-dir=/usr --with-zlib-dir=/usr --with-jpeg-dir=/usr --with-freetype-dir=/usr \
     && /usr/local/bin/docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) gd \
     && (rm -rf /usr/local/lib/php/test/gd || true) \
     && (rm -rf /usr/local/lib/php/doc/gd || true) \
