@@ -1,9 +1,10 @@
-FROM php:fpm
+FROM php:7-fpm
 
 ENV BUILD_DEPS="cmake libicu-dev libfreetype6-dev libjpeg62-turbo-dev libpng-dev libzip-dev libmagickwand-dev" \
-    RUN_DEPS="openssl net-tools sudo dumb-init bsdtar gettext jq zip git unzip locales locales-all wget curl \
-            libfreetype6 libjpeg62-turbo libpng16-16 libzip4 ruby-full nodejs mysql-client libmagickwand-6.q16-3 \
-            socat supervisor ca-certificates"
+    RUN_DEPS="sudo dumb-init gettext jq zip git unzip locales wget curl \
+            libfreetype6 libjpeg62-turbo libpng16-16 libzip4 libmagickwand-6.q16-3 \
+            socat supervisor ca-certificates" \
+    RUN_DEV_DEPS="openssl net-tools bsdtar ruby-full nodejs mysql-client"
 
 RUN set -x \
 # ---- Installing Build dependencies ----
@@ -57,13 +58,14 @@ RUN set -x \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ${BUILD_DEPS} \
 # ---- Installing Running dependencies ----
     && curl -sL https://deb.nodesource.com/setup_8.x | bash -\
-    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends --no-install-suggests ${RUN_DEPS} \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y --no-install-recommends --no-install-suggests ${RUN_DEPS} ${RUN_DEV_DEPS} \
     && DEBIAN_FRONTEND=noninteractive apt-get purge -qq -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false apt-utils \
     && rm -rf /var/lib/apt/lists/* \
     && update-ca-certificates
 
 COPY --from=chrishsieh/develop_php:coder-stretch-slim /code-server /usr/local/bin/code-server
 COPY --from=chrishsieh/develop_php:coder-stretch-slim /etc/CODER_VER /etc/CODER_VER
+COPY locale.md /etc/locale.md
 
 # ---- Installing Running env ----
 RUN set -x \
@@ -75,18 +77,26 @@ RUN set -x \
     && rm -rf /etc/supervisor* \
     && mkdir -p /etc/supervisor/conf.d \
     && mkdir -p /var/log/supervisor \
+    && mkdir -p /run.d \
+    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
 # ---- Add user ----
     && adduser --gecos '' --disabled-password coder \
-    && echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    && echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
+    && cat /etc/locale.md | xargs -i sed -i 's/# {}.UTF-8 UTF-8/{}.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen \
+    && cat /etc/locale.md | xargs -i localedef -i {} -f UTF-8 {} \
+    && echo "alias ls='ls --color=auto'" >> /root/.bashrc \
+    && echo "alias ll='ls --color=auto -l'" >> /root/.bashrc \
+    && echo "alias l='ls --color=auto -lA'" >> /root/.bashrc
 
 ENV VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
     VSCODE_DATA="/home/coder/.local/share/code-server" \
     VSCODE_LOGS="/home/coder/.cache/code-server/logs" \
     VSCODE_WORK_DIR="/var/www" \
-    HOME="/home/coder"
+    HOME="/home/coder" \
+    TERM="xterm-color"
 
-RUN mkdir -p /run.d
-ADD supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 USER coder
 
