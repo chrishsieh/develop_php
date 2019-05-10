@@ -20,11 +20,11 @@ if ! [ -f git_clone.done ]; then
     run "chmod +x ./scripts/*.sh" "${DEBUG_LEVEL}"
 
     cd src
-    run "find . -type d -exec chmod -R 775 {} \;" "${DEBUG_LEVEL}"
-    run "find . -type f -exec chmod -R 664 {} \;" "${DEBUG_LEVEL}"
+    run "find . -type d -exec chmod -R 755 {} \;" "${DEBUG_LEVEL}"
+    run "find . -type f -exec chmod -R 644 {} \;" "${DEBUG_LEVEL}"
 
     cd ../..
-    run "chown -R coder:www-data CRM" "${DEBUG_LEVEL}"
+    run "chown -R coder:coder CRM" "${DEBUG_LEVEL}"
     touch git_clone.done
 fi
 

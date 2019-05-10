@@ -13,10 +13,12 @@ services:
       MYSQL_DB_HOST: ${MYSQL_DB_HOST:-db}
     volumes:
       - source_code:/var/www/
-      - coder_setting:/home/coder/:cached
+      - coder_setting:/home/coder/
       - project:/home/coder/project
       - ./runtime/coder/run.d/:/run.d/
       - ./runtime/coder/setting/:/setting/
+      - ./runtime/coder/setting/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./runtime/coder/setting/www.conf:/usr/local/etc/php-fpm.d/www.conf
     ports:
       - "8443:8443"
     links:

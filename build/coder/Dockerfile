@@ -71,8 +71,10 @@ COPY locale.md /etc/locale.md
 RUN set -x \
     && npm i npm@latest -g \
     && npm install -g grunt-cli webpack-cli \
+    && npm cache clean --force \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer self-update \
+    && composer clearcache \
     && gem install sass -v 3.4.25 \
     && rm -rf /etc/supervisor* \
     && mkdir -p /etc/supervisor/conf.d \
@@ -101,6 +103,7 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 USER coder
 
 RUN composer global require hirak/prestissimo \
+    && composer clearcache \
     && mkdir -p ${VSCODE_EXTENSIONS} \
     && mkdir -p ${VSCODE_DATA} \
     && mkdir -p ${VSCODE_LOGS}
