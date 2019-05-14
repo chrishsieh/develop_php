@@ -68,8 +68,6 @@ SCRIPT
 
 run_docker_compose = <<SCRIPT
   cd /vagrant
-  docker-compose -f portainer.yml down
-  docker-compose -f portainer.yml up -d
   docker-compose down
   time docker-compose build
   docker-compose up -d
