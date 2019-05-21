@@ -15,7 +15,7 @@ RUN set -x \
     && echo "${coderfile}" > /usr/local/bin/CODER_VER \
     && tar zxf $coderfile \
     && rm -rf $coderfile \
-    && coderfolder=$(ls | grep "codercom-code-server") \
+    && coderfolder=$(ls | grep "cdr-code-server") \
     && mv $coderfolder coder
 
 RUN set -x \
