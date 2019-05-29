@@ -3,8 +3,8 @@ services:
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
-    links:
-      - db
+#    links:
+#      - db
     ports:
       - "${DEV_PHPMYADMIN_PORT:-8000}:80"
   mailcatcher:
