@@ -109,5 +109,5 @@ USER root
 COPY coder-entrypoint.sh /coder-entrypoint.sh
 COPY coder-entrypoint.d/*.sh /coder-entrypoint.d/
 RUN chmod +x /coder-entrypoint.sh && chmod +x /coder-entrypoint.d/*.sh
-
+ENV SHELL /bin/bash
 ENTRYPOINT ["dumb-init", "/coder-entrypoint.sh"]
