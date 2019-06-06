@@ -63,8 +63,6 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/* \
     && update-ca-certificates
 
-COPY --from=chrishsieh/develop_php:coder-stretch-slim /code-server /usr/local/bin/code-server
-COPY --from=chrishsieh/develop_php:coder-stretch-slim /etc/CODER_VER /etc/CODER_VER
 COPY locale.md /etc/locale.md
 
 # ---- Installing Running env ----
@@ -91,11 +89,7 @@ RUN set -x \
     && echo "alias ll='ls --color=auto -l'" >> /root/.bashrc \
     && echo "alias l='ls --color=auto -lA'" >> /root/.bashrc
 
-ENV VSCODE_EXTENSIONS="/home/coder/.local/share/code-server/extensions" \
-    VSCODE_DATA="/home/coder/.local/share/code-server" \
-    VSCODE_LOGS="/home/coder/.cache/code-server/logs" \
-    VSCODE_WORK_DIR="/var/www" \
-    HOME="/home/coder" \
+ENV HOME="/home/coder" \
     TERM="xterm-color"
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
@@ -103,10 +97,7 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 USER coder
 
 RUN composer global require hirak/prestissimo \
-    && composer clearcache \
-    && mkdir -p ${VSCODE_EXTENSIONS} \
-    && mkdir -p ${VSCODE_DATA} \
-    && mkdir -p ${VSCODE_LOGS}
+    && composer clearcache
 
 WORKDIR /var/www
 
