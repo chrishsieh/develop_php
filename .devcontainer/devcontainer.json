@@ -1,0 +1,20 @@
+{
+    "name": "churchCRM-Dev",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "code",
+    "workspaceFolder": "/var/www",
+    "shutdownAction": "none",
+    "settings": {
+        //"workbench.colorTheme": "Quiet Light",
+        "npm.enableScriptExplorer": true,
+        "php.executablePath": "/usr/local/bin/php"
+    },
+    //"postCreateCommand": "uname -a",
+    "extensions": [
+        "felixfbecker.php-intellisense",
+        "felixfbecker.php-debug",
+        "eamodio.gitlens"
+    ]
+}
