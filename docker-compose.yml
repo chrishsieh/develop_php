@@ -13,7 +13,6 @@ services:
     volumes:
       - source_code:/var/www/
       - coder_setting:/home/coder/
-      - project:/home/coder/project
       - ./runtime/coder/run.d/:/run.d/
       - ./runtime/coder/setting/:/setting/
       - ./runtime/coder/setting/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
@@ -46,4 +45,3 @@ volumes:
   source_code:
   coder_setting:
   db_data:
-  project:
